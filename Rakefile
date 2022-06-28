@@ -3,7 +3,6 @@
 
 require 'bundler/gem_tasks'
 require 'rake/testtask'
-require 'rdoc/task'
 
 desc 'Default: run tests for all ORMs.'
 task default: :test
@@ -27,11 +26,17 @@ Rake::TestTask.new(:test) do |t|
   t.warning = false
 end
 
-desc 'Generate documentation for Devise.'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'Devise'
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README.md')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+begin
+  require 'rdoc/task'
+
+  desc 'Generate documentation for Devise.'
+  Rake::RDocTask.new(:rdoc) do |rdoc|
+    rdoc.rdoc_dir = 'rdoc'
+    rdoc.title    = 'Devise'
+    rdoc.options << '--line-numbers' << '--inline-source'
+    rdoc.rdoc_files.include('README.md')
+    rdoc.rdoc_files.include('lib/**/*.rb')
+  end
+rescue LoadError
+  # Do not fail if rdoc cannot be loaded.  This allows excluding rdoc in CI environments.
 end
